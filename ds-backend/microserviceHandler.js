@@ -8,8 +8,10 @@ module.exports = {
     getMicroservice: (gameId, name, environment, userName) => {
         let myPromise = new Promise(function (resolve, reject) {
             let sqlString = `SELECT * FROM Microservices WHERE name = '${name}' 
-                AND gameId = ${gameId} AND environment = '${environment}' 
-                AND userName = '${userName}'`;
+                 AND gameId = ${gameId} AND environment = '${environment}' 
+                 AND userName = '${userName}'`;
+            
+            console.log(`SQL String: ${sqlString}`);
             pool.getConnection((err, connection) => {
                 if (err) {
                     console.log(`Error!`);
@@ -122,7 +124,7 @@ module.exports = {
                 '${microservice.lastestDeployment.processes[0].memory}', 
                 '${microservice.status}', 
                 '${microservice.lastestDeployment.deploymentInfo.uploadedBy}')`;
-            debugHandler.insert('microserviceHandler', sqlstring);
+            debugHandler.insert('microserviceHandler', sqlString);
             pool.getConnection((err, connection) => {
                 if (err) {
                     console.log(`Error!`);

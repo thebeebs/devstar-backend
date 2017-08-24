@@ -6,7 +6,7 @@ var deathstar = require('../deathstarHandler');
 //retrieve latest games
 router.get('/latest', function(req, res, next) {
     deathstar.getCurrentGame()
-        .then( row => res.send(row[0]), err => res.send(err) );
+        .then( row => res.send(row), err => res.send(err) );
 });
 
 //retrieve all games

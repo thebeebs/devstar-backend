@@ -262,8 +262,9 @@ const getCurrentGame = function () {
                 connection.query(sqlString, (err, result, fields) => {
                     connection.release();
                     if (!err) {
-                        console.log(`Result getCurrent game: ${result}`);
-                        resolve(result);
+                        console.log(`Result getCurrent game: ${JSON.stringify(result)}`);
+                        //console.log(result);
+                        resolve(result[0]);
                     } else {
                         console.log('Database error: ' + err.stack);
                         reject(err);

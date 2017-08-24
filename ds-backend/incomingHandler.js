@@ -10,10 +10,11 @@ const incomingFire = async (squadName, microserviceName, type) => {
 	console.log('Incomingfire' );
         debugHandler.insert('incomingHandler', 'Incomingfire' );
     try {
-        let gameId = (await deathstar.getCurrentGame())[0].id;
+        let gameId = (await deathstar.getCurrentGame()).id;
         let ms = (await microservices.getMicroserviceByGameAndName(gameId, microserviceName, squadName))[0];
         let sq = (await squads.getSquadByUserName(gameId, ms.userName, ms.environment))[0];
         
+        console.log(`Incoming fire from squad: ${JSON.stringify(sq)} and microservice is: ${JSON.stringify(ms)}`);
         let result = missionHandler.missionCompleted(type, ms, sq, gameId);
         return result;
     } catch(e) {
@@ -48,7 +49,7 @@ const incomingMinigun = async(params) => {
 		debugHandler.insert('incomingHandler', 'Mission completed');
 		
         try {
-            let gameId = (await deathstar.getCurrentGame())[0].id;
+            let gameId = (await deathstar.getCurrentGame()).id;
             let microservice = (await microservices.getMicroserviceByGameAndName(gameId, params.microserviceName, params.squadName))[0];
             let squad = (await squads.getSquadByUserName(gameId, microservice.userName, microservice.environment))[0];
             

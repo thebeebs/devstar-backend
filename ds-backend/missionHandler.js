@@ -17,17 +17,18 @@ MISSION = {
 
 const missionCompleted = async (mission, microservice, squad, gameId) => {
     try {
+        console.log('We have a new completed mission..!');
         let missionId = await getMissionId(mission.name, gameId);
         let isCompletedByMicroservice = await isMissionCompletedByMicroservice(missionId, microservice.id);
         if (isCompletedByMicroservice)
             return;
 
-        let isCompletedBySquad = await isCompletedBySquad(missionId, squad.id);
+        let isCompletedBySquad = await isMissionCompletedBySquad(missionId, squad.id);
         let fractionOfSquadsCompleted = await getFractionCompleted(missionId, gameId);
         let scoreToGive = isCompletedBySquad ? 0 : (mission.maxScore * (1 - fractionOfSquadsCompleted));
-
+        console.log(`Inserting mission complete: ${missionId} ${microservice.id} ${gameId} ${scoreToGive}`)
         insertMissionCompleted(missionId, microservice.id, gameId, scoreToGive);
-
+        deathstar.updateHealth(gameId, scoreToGive);
         switch (mission.name) {
             case MISSION.DEPLOY.name:
                 logHandler.insertLog(squad.name, microservice.name, scoreToGive, scoreToGive, logHandler.LOG_TYPE.DEPLOY);
@@ -61,7 +62,7 @@ const updateMissionState = (missionId, missionName, newState) => {
     let myPromise = new Promise(function (resolve, reject) {
         let sqlString = `UPDATE Missions SET state = '${newState}' 
             WHERE gameId = ${missionId} AND name = '${missionName}'`;
-        debugHandler.insert('missionHandler', sqlstring);
+        debugHandler.insert('missionHandler', sqlString);
         pool.getConnection((err, connection) => {
             if (err) {
                 console.log(`Error!`);
@@ -86,17 +87,17 @@ const updateMissionState = (missionId, missionName, newState) => {
 const getMissionId = (missionName, gameId) => {
     var getMissionIdPromise = new Promise(function (resolve, reject) {
         var sqlstring = "SELECT id from Missions WHERE gameId = " + gameId + " " +
-        		"AND name = '" + missionName + "' AND state = '" + deathstar.MISSION_STATE.STARTED + "'";
+        		"AND name = '" + missionName + "'";
         
-        let sqlString = `SELECT id from Missions WHERE gameId = ${gameId} 
-            AND name = '${missionName}' AND state = '${deathstar.MISSION_STATE.STARTED}'`;
+        //let sqlString = `SELECT id from Missions WHERE gameId = ${gameId} 
+        //    AND name = '${missionName}'`;
         pool.getConnection((err, connection) => {
             if (err) {
                 console.log(`Error!`);
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
             } else {
                 //console.log(`Connection object: ${JSON.stringify(connection)}`);
-                connection.query(sqlString, (err, result, fields) => {
+                connection.query(sqlstring, (err, result, fields) => {
                     connection.release();
                     if (!err) {
                         resolve(result[0].id);
@@ -171,7 +172,7 @@ const getFractionCompleted = (missionId, gameId) => {
             WHERE missionId = ${missionId} ) / 
             (SELECT COUNT(*) FROM Squads 
             WHERE gameId = ${gameId} ) as divisionResult`;
-        debugHandler.insert('missionHandler', sqlstring);
+        //debugHandler.insert('missionHandler', sqlString);
         pool.getConnection((err, connection) => {
             if (err) {
                 console.log(`Error!`);

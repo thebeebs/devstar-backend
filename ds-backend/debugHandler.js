@@ -25,27 +25,28 @@ const get = options => {
 };
 
 const insert = (service, message) => {
-	console.log(message);
-    let sqlString = `INSERT INTO Debug (service, message, hostname) 
-        VALUES("${service}" , "${message}", "${hostname}")`;
+	//console.log(message);
+    //let sqlString = `INSERT INTO Debug (service, message, hostname) 
+    //    VALUES("${service}" , "${message}", "${hostname}")`;
     let myPromise = new Promise((resolve, reject) => {
-        pool.getConnection((err, connection) => {
-            if (err) {
-                console.log(`Error!`);
-                reject(`Error connecting to database: ${JSON.stringify(err)}`);
-            } else {
-                //console.log(`Connection object: ${JSON.stringify(connection)}`);
-                connection.query(sqlString, (err, result, fields) => {
-                    connection.release();
-                    if (!err) {
-                        resolve(result);
-                    } else {
-                        console.log('Database error: ' + err.stack);
-                        reject(err);
-                    }
-                });
-            }
-        });
+        resolve();
+//        pool.getConnection((err, connection) => {
+//            if (err) {
+//                console.log(`Error!`);
+//                reject(`Error connecting to database: ${JSON.stringify(err)}`);
+//            } else {
+//                //console.log(`Connection object: ${JSON.stringify(connection)}`);
+//                connection.query(sqlString, (err, result, fields) => {
+//                    connection.release();
+//                    if (!err) {
+//                        resolve(result);
+//                    } else {
+//                        console.log('Database error: ' + err.stack);
+//                        reject(err);
+//                    }
+//                });
+//            }
+//        });
     });
     return myPromise;
 };
