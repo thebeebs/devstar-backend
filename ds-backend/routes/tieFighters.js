@@ -10,7 +10,9 @@ const xCoordinate = 45;
  * Endpoint to hit one of the TIE fighters.
  */
 router.get('/' + xCoordinate + '/:y/:squadName/:microserviceName', function(req, res, next) {
-	console.log('Incoming from microservice: ' + req.params.microserviceName );
+    incomingHandler.incomingMinigun(req.params);
+					res.send('Something got hit!');
+	/*console.log('Incoming from microservice: ' + req.params.microserviceName );
 	if (req.params.squadName == 'test') {
 		// this is used to test out the endpoint from Postman
 		req.params.squadName = 'blue';
@@ -26,7 +28,7 @@ router.get('/' + xCoordinate + '/:y/:squadName/:microserviceName', function(req,
 					res.send('Caller is not a fighter!');
 				}
 			});
-	}
+	}*/
 });
 
 module.exports = router;
