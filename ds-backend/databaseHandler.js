@@ -8,8 +8,10 @@ const dbUserName = "root";
 // make sure you have a thunnel as per below
 //const connectString = process.env.MYSQLCS_CONNECT_STRING
         //|| "127.0.0.1:3306/deathstar";
-        
-const connectString = `140.86.35.229:3306`;
+
+const databaseUrl = `${JSON.stringify(process.env.OCCS_HOSTIPS)}`.split('public_ip: ')[1].split('"')[0];
+
+const connectString = `${databaseUrl}:3306`;
 
 const host = connectString.split(":")[0];
 const user = process.env.MYSQLCS_USER_NAME || dbUserName;
