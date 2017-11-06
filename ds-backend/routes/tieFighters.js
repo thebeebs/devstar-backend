@@ -7,7 +7,7 @@ var missionHandler = require('../missionHandler');
 const xCoordinate = 45;
 
 /**
- * Endpoint to hit one of the TIE fighters.
+ * Endpoint to hit one of theMinifighters.
  */
 router.get('/' + xCoordinate + '/:y/:squadName/:microserviceName', function(req, res, next) {
     incomingHandler.incomingMinigun(req.params);
