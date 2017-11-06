@@ -12,7 +12,7 @@ const xCoordinate = 45;
 router.get('/' + xCoordinate + '/:y/:squadName/:microserviceName', function(req, res, next) {
     incomingHandler.incomingMinigun(req.params);
 					res.send('Something got hit!');
-	/*console.log('Incoming from microservice: ' + req.params.microserviceName );
+	console.log('Incoming from microservice: ' + req.params.microserviceName );
 	if (req.params.squadName == 'test') {
 		// this is used to test out the endpoint from Postman
 		req.params.squadName = 'blue';
@@ -28,7 +28,7 @@ router.get('/' + xCoordinate + '/:y/:squadName/:microserviceName', function(req,
 					res.send('Caller is not a fighter!');
 				}
 			});
-	}*/
+	}
 });
 
 module.exports = router;

@@ -16,6 +16,9 @@ MISSION = {
 };
 
 const missionCompleted = async (mission, microservice, squad, gameId) => {
+	if (!microservice) {
+		return;
+	}
     try {
         console.log('We have a new completed mission..!');
         let missionId = await getMissionId(mission.name, gameId);
@@ -60,7 +63,7 @@ const missionCompleted = async (mission, microservice, squad, gameId) => {
 
 const updateMissionState = (missionId, missionName, newState) => {
     let myPromise = new Promise(function (resolve, reject) {
-        let sqlString = `UPDATE Missions SET state = '${newState}' 
+        let sqlString = `UPDATE Missions SET state = '${newState}'
             WHERE gameId = ${missionId} AND name = '${missionName}'`;
         debugHandler.insert('missionHandler', sqlString);
         pool.getConnection((err, connection) => {
@@ -88,8 +91,8 @@ const getMissionId = (missionName, gameId) => {
     var getMissionIdPromise = new Promise(function (resolve, reject) {
         var sqlstring = "SELECT id from Missions WHERE gameId = " + gameId + " " +
         		"AND name = '" + missionName + "'";
-        
-        //let sqlString = `SELECT id from Missions WHERE gameId = ${gameId} 
+
+        //let sqlString = `SELECT id from Missions WHERE gameId = ${gameId}
         //    AND name = '${missionName}'`;
         pool.getConnection((err, connection) => {
             if (err) {
@@ -114,7 +117,7 @@ const getMissionId = (missionName, gameId) => {
 
 const isMissionCompletedByMicroservice = (missionId, microserviceId) => {
     let myPromise = new Promise(function (resolve, reject) {
-        let sqlString = `SELECT * FROM MissionsMicroservices 
+        let sqlString = `SELECT * FROM MissionsMicroservices
             WHERE microserviceId = ${microserviceId} AND missionId = ${missionId}`;
         pool.getConnection((err, connection) => {
             if (err) {
@@ -139,9 +142,9 @@ const isMissionCompletedByMicroservice = (missionId, microserviceId) => {
 
 const isMissionCompletedBySquad = (missionId, squadId) => {
     let myPromise = new Promise(function (resolve, reject) {
-        let sqlString = `SELECT * FROM MissionsMicroservices mm 
-            INNER JOIN SquadsMicroservices sm ON mm.microserviceId = sm.microserviceId 
-            INNER JOIN Squads sq on sq.id = sm.squadId 
+        let sqlString = `SELECT * FROM MissionsMicroservices mm
+            INNER JOIN SquadsMicroservices sm ON mm.microserviceId = sm.microserviceId
+            INNER JOIN Squads sq on sq.id = sm.squadId
             WHERE squadId = ${squadId} AND missionId = ${missionId}`;
         pool.getConnection((err, connection) => {
             if (err) {
@@ -166,11 +169,11 @@ const isMissionCompletedBySquad = (missionId, squadId) => {
 
 const getFractionCompleted = (missionId, gameId) => {
     let myPromise = new Promise(function (resolve, reject) {
-        let sqlString = `SELECT (SELECT COUNT(DISTINCT squadId) FROM Squads sq 
-            RIGHT JOIN SquadsMicroservices sm ON sq.id = sm.squadId 
-            RIGHT JOIN MissionsMicroservices mm ON sm.microserviceId = mm.microserviceId 
-            WHERE missionId = ${missionId} ) / 
-            (SELECT COUNT(*) FROM Squads 
+        let sqlString = `SELECT (SELECT COUNT(DISTINCT squadId) FROM Squads sq
+            RIGHT JOIN SquadsMicroservices sm ON sq.id = sm.squadId
+            RIGHT JOIN MissionsMicroservices mm ON sm.microserviceId = mm.microserviceId
+            WHERE missionId = ${missionId} ) /
+            (SELECT COUNT(*) FROM Squads
             WHERE gameId = ${gameId} ) as divisionResult`;
         //debugHandler.insert('missionHandler', sqlString);
         pool.getConnection((err, connection) => {
@@ -200,8 +203,8 @@ const insertMissionCompleted = (missionId, microserviceId, gameId, score) => {
             let sqlstring = "INSERT IGNORE INTO MissionsMicroservices " +
             "(microserviceId, missionId, score) VALUES(" + microserviceId +
             ", " + missionId + ", " + score + ")";
-            let sqlString = `INSERT IGNORE INTO MissionsMicroservices 
-                (microserviceId, missionId, score) 
+            let sqlString = `INSERT IGNORE INTO MissionsMicroservices
+                (microserviceId, missionId, score)
                 VALUES (${microserviceId}, ${missionId}, ${score})`;
             pool.getConnection((err, connection) => {
                 if (err) {
@@ -225,7 +228,7 @@ const insertMissionCompleted = (missionId, microserviceId, gameId, score) => {
         }
     });
     return myPromise;
-	
+
 };
 module.exports = {
 	missionCompleted : missionCompleted,

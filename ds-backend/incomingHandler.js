@@ -12,9 +12,11 @@ const incomingFire = async (squadName, microserviceName, type) => {
     try {
         let gameId = (await deathstar.getCurrentGame()).id;
         let ms = (await microservices.getMicroserviceByGameAndName(gameId, microserviceName, squadName))[0];
-        let sq = (await squads.getSquadByUserName(gameId, ms.userName, ms.environment))[0];
-        
-        console.log(`Incoming fire from squad: ${JSON.stringify(sq)} and microservice is: ${JSON.stringify(ms)}`);
+				if (ms) {
+					let sq = (await squads.getSquadByUserName(gameId, ms.userName, ms.environment))[0];
+					console.log(`Incoming fire from squad: ${JSON.stringify(sq)} and microservice is: ${JSON.stringify(ms)}`);
+				}
+
         let result = missionHandler.missionCompleted(type, ms, sq, gameId);
         return result;
     } catch(e) {
@@ -25,8 +27,8 @@ const incomingFire = async (squadName, microserviceName, type) => {
 const incomingMinigun = async(params) => {
 	//debugHandler.insert('incomingHandler', 'Incoming minigun' );
 	var insert = {
-			'microservice' :  params.microserviceName, 
-			'squad' : params.squadName, 
+			'microservice' :  params.microserviceName,
+			'squad' : params.squadName,
 			'y' : params.y.replace('y','')
 	};
 	var count = 0;
@@ -36,8 +38,8 @@ const incomingMinigun = async(params) => {
 			console.log('Already hit!');
 			return;
 		}
-		if (array[i].microservice === insert.microservice 
-				&& array[i].squad === insert.squad 
+		if (array[i].microservice === insert.microservice
+				&& array[i].squad === insert.squad
 				&& insert.y >= 0 && insert.y < 10) {
 			count++;
 		}
@@ -47,12 +49,12 @@ const incomingMinigun = async(params) => {
 
 	if (count == 9) {
 		debugHandler.insert('incomingHandler', 'Mission completed');
-		
+
         try {
             let gameId = (await deathstar.getCurrentGame()).id;
             let microservice = (await microservices.getMicroserviceByGameAndName(gameId, params.microserviceName, params.squadName))[0];
             let squad = (await squads.getSquadByUserName(gameId, microservice.userName, microservice.environment))[0];
-            
+
             return missionHandler.missionCompleted(missionHandler.MISSION.ITERATE, microservice, squad, gameId);
         } catch(e) {
             console.log(e);
