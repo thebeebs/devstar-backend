@@ -21,7 +21,7 @@ module.exports = {
 			.then( game => {
 				if (game) {
 					deathstar.getDeathstar(game.deathStarId)
-					.then( deathstarObj => {   
+					.then( deathstarObj => {
 				       	if (! (deathstarObj.state == deathstarObj.state.INITIALIZING)) {
                             console.log('Should go polling domains');
 				       		pollDomains(game);
@@ -42,6 +42,7 @@ function checkIfStateChanged(game) {
 	debugHandler.insert('Engine', 'Check state, id now ' + game.state);
     console.log(`checkIfStateChanged game: ${JSON.stringify(game)}`);
 	switch (game.state) {
+		/*
 	case deathstar.STATE.STARTED:
         console.log('Goto updateStateIfNeeded');
 		updateStateIfNeeded(0, missionHandler.MISSION.SCALE.name, deathstar.STATE.SHIELD, game);
@@ -66,6 +67,7 @@ function checkIfStateChanged(game) {
 			}
 		});
 		break;
+		*/
 	case deathstar.STATE.FALCON:
 		updateStateIfNeeded(0.5, missionHandler.MISSION.FALCON.name, deathstar.STATE.FALCONCALLED, game);
 		break;
@@ -99,8 +101,8 @@ function pollDomains(game) {
     console.log(`GAME: ${JSON.stringify(game)}`);
     console.log(`Domains: ${JSON.stringify(game.gseDomains)}`);
     var JSONDomains = JSON.parse(game.gseDomains);
-    
-    
+
+
 	JSONDomains.forEach(domain => {
         var options = {
     			host : domain.host,
@@ -110,9 +112,9 @@ function pollDomains(game) {
     				'X-ID-TENANT-NAME' : domain.name
     			}
     	};
-        
+
         console.log(`Options: ${JSON.stringify(options)}`);
-        
+
 		callback = function(response) {
             console.log(`Received response and in callback now: ${response}`);
 			var str = '';
@@ -127,10 +129,10 @@ function pollDomains(game) {
 			});
             console.log(`End of callback`);
 		};
-        
+
         console.log(`Doing request with options : ${JSON.stringify(options)}`);
 		var req = http.request(options, callback);
-        
+
 		req.end();
         console.log('end of request');
 	});
@@ -165,7 +167,7 @@ function updateMicroservice(rows, microservice, gameId) {
 				.then( data => missionHandler.missionCompleted(missionHandler.MISSION.FALCON, dbMicroservice, data[0], gameId));
 			}
 		} else if (microservice.lastestDeployment.processes[0].quantity === 2) {
-			// user has scaled up to 2 instances, this mean the the user 
+			// user has scaled up to 2 instances, this mean the the user
 			// completed the Scale Mission.
 			microservices.updateMicroservice(microservice, dbMicroservice.id);
 			squads.getSquadByUserName(gameId, dbMicroservice.userName, dbMicroservice.environment)
@@ -185,7 +187,7 @@ function updateMicroservice(rows, microservice, gameId) {
                         gameId, microservice.name, microservice.identityDomain, microservice.lastestDeployment.deploymentInfo.uploadedBy))
                     // response is the result of a promise holding the rows
 					// object.
-                    .then( response => { 
+                    .then( response => {
                         debugHandler.insert('Engine', 'Received row from database: ' + JSON.stringify(response));
                         let row = response[0];
                         let microserviceId = row.id;
@@ -193,12 +195,12 @@ function updateMicroservice(rows, microservice, gameId) {
                         let environment = row.environment;
                         let squad;
                         squads.getSquadByUserName(gameId, username, environment)
-                            .then( data => { 
+                            .then( data => {
                             	squad = data[0];
                             	return squadsMicroservicesHandler.insertSquadMicroservice(squad.id, microserviceId);
                             	}, (err) => debugHandler.insert('Engine', "Couldn't find squad ID for: " + username))
                             .then( () => missionHandler.missionCompleted(missionHandler.MISSION.DEPLOY, row, squad, gameId));
-                    }); 
-                
+                    });
+
 	}
 }

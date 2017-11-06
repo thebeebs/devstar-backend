@@ -8,9 +8,8 @@ router.post('/start', function(req, res, next) {
 	var bd = req.body;
 	var deathstarId;
 	var gameId;
-	
-	var startHealth = calcStartHealth(bd.maxPoints, bd.squads.length);
-	
+	var startHealth = calcStartHealth(bd.enableDatabaseMission, bd.squads.length);
+
 	deathstarHandler.insertDeathStar(startHealth)
 	.then( id => {
 		deathstarId = id
@@ -21,7 +20,7 @@ router.post('/start', function(req, res, next) {
 		return deathstarHandler.insertMissions(gameId, bd.timeLimit);
 	})
 	.then( () => deathstarHandler.insertSquads(gameId, bd.squads))
-	.then( () => deathstarHandler.updateState(deathstarHandler.STATE.STARTED, deathstarId))
+	.then( () => deathstarHandler.updateState(bd.enableDatabaseMission ? deathstarHandler.STATE.STARTED_DATABASE : deathstarHandler.STATE.STARTED, deathstarId))
 	.then( () => {
 		logHandler.insertLog("", "", 0, 0, logHandler.LOG_TYPE.START);
 		res.send('Game started with id ' + gameId);
@@ -64,11 +63,11 @@ router.delete('/games/delete', function(req, res, next) {
 	});
 });
 
-function calcStartHealth(points, squads) {
-	var lowest = points / squads;
-	var avg = (lowest + points)/2;
+function calcStartHealth(dbMission, squads) {
+  var basePoints = 100 + 100 + 300 + 500 + (dbMission ? 500 : 0);
+	var lowest = basePoints / squads;
+	var avg = (lowest + basePoints)/2;
 	var total = avg * squads;
 	return total;
 };
-
 module.exports = router;

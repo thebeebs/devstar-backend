@@ -4,6 +4,7 @@ const log = require('./logHandler');
 const
         STATE = {
             STARTED: "STARTED",
+            STARTED_DATABASE: "STARTED_DATABASE",
             INITIALIZING: "INITIALIZING",
             SHIELD: "SHIELD",
             FINAL: "FINAL",
@@ -41,11 +42,11 @@ const insertDeathStar = function (startHealth) {
     let myPromise = new Promise((resolve, reject) => {
         let sqlString = `INSERT INTO DeathStars (startHealth, currentHealth, state)
             VALUES(${startHealth}, ${startHealth}, '${STATE.INITIALIZING}')`;
-        
+
         pool.getConnection( (err, connection) => {
             if(err)
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
-            
+
             connection.query(sqlString, (error, result, fields) => {
                 connection.release();
                 if(!error)
@@ -63,11 +64,11 @@ const updateState = (state, id) => {
         //var sqlstring = "UPDATE DeathStars SET " +
         //        "state = '" + state + "' WHERE id = " + id;
         let sqlString = `UPDATE DeathStars SET state = '${state}' WHERE id = ${id}`;
-        
+
         pool.getConnection( (err, connection) => {
             if(err)
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
-            
+
             connection.query(sqlString, (error, result, fields) => {
                 connection.release();
                 if(!error)
@@ -91,10 +92,10 @@ const updateState = (state, id) => {
 
 const updateHealth = (gameId, damageToGive) => {
     let myPromise = new Promise((resolve, reject) => {
-        
+
         let sqlString = `UPDATE DeathStars AS D
-            INNER JOIN Games as g on g.deathStarId = D.id 
-            SET D.currentHealth = D.currentHealth - ${damageToGive} 
+            INNER JOIN Games as g on g.deathStarId = D.id
+            SET D.currentHealth = D.currentHealth - ${damageToGive}
             WHERE g.id = ${gameId}`;
         /*var sqlstring = "UPDATE DeathStars as D " +
                 "INNER JOIN Games as g on g.deathStarId = D.id " +
@@ -103,7 +104,7 @@ const updateHealth = (gameId, damageToGive) => {
         pool.getConnection( (err, connection) => {
             if(err)
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
-            
+
             connection.query(sqlString, (err, result, fields) => {
                 connection.release();
                 if (!err) {
@@ -140,7 +141,7 @@ const insertGame = (deathStarId, timeLimit, domains, squads) => {
                 + ",'"
                 + JSON.stringify(domains)
                 + "')";*/
-        let sqlString = `INSERT INTO Games (endTime, timeLimit, deathStarId, gseDomains) 
+        let sqlString = `INSERT INTO Games (endTime, timeLimit, deathStarId, gseDomains)
             VALUES(NOW() + INTERVAL + ${timeLimit} MINUTE, ${timeLimit}, ${deathStarId}, '${JSON.stringify(domains)}')`;
         /*db.query(sqlstring, (err, result, fields) => {
             if (!err) {
@@ -154,7 +155,7 @@ const insertGame = (deathStarId, timeLimit, domains, squads) => {
         pool.getConnection( (err, connection) => {
             if(err)
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
-            
+
             connection.query(sqlString, (err, result, fields) => {
                 connection.release();
                 if (!err) {
@@ -187,13 +188,13 @@ const insertMission = (gameId, mission) => {
         /*var sqlstring = "INSERT INTO Missions (name, gameId)"
                 + " VALUES('" + mission.name + "',"
                 + gameId + ")";*/
-        let sqlString = `INSERT INTO Missions (name, gameId) 
+        let sqlString = `INSERT INTO Missions (name, gameId)
             VALUES('${mission.name}', ${gameId})`;
-        
+
         pool.getConnection( (err, connection) => {
             if(err)
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
-            
+
             connection.query(sqlString, (err, result, fields) => {
                 connection.release();
                 if (!err) {
@@ -221,14 +222,14 @@ const insertSquad = (gameId, squad) => {
         /*var sqlstring = "INSERT INTO Squads (name, gameId, environment, username)"
                 + " VALUES('" + squad.name + "'," + gameId + ",'"
                 + squad.domain + "','" + squad.username + "')";*/
-        
-        let sqlString = `INSERT INTO Squads (name, gameId, environment, username) 
+
+        let sqlString = `INSERT INTO Squads (name, gameId, environment, username)
             VALUES('${squad.name}', ${gameId}, '${squad.domain}', '${squad.username}')`;
-        
+
         pool.getConnection( (err, connection) => {
             if(err)
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
-            
+
             connection.query(sqlString, (err, result, fields) => {
                 connection.release();
                 if (!err) {
@@ -246,7 +247,7 @@ const insertSquad = (gameId, squad) => {
 const getCurrentGame = function () {
     return new Promise((resolve, reject) => {
         let sqlString = `
-            SELECT *, 
+            SELECT *,
             games.id AS gameId,
             deathstars.id AS deathstarId
             FROM DeathStars deathstars
@@ -278,7 +279,7 @@ const getCurrentGame = function () {
 const getDeathstarForGame = function (gameId) {
     return new Promise((resolve, reject) => {
         let sqlString = `
-            SELECT *, 
+            SELECT *,
             games.id AS gameId,
             deathstars.id AS deathstarId
             FROM DeathStars deathstars
@@ -288,7 +289,7 @@ const getDeathstarForGame = function (gameId) {
         pool.getConnection( (err, connection) => {
             if(err)
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
-            
+
             connection.query(sqlString, (err, result, fields) => {
                 connection.release();
                 if (!err) {
@@ -308,7 +309,7 @@ var getDeathstar = function (id) {
         pool.getConnection( (err, connection) => {
             if(err)
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
-            
+
             connection.query(sqlString, (err, result, fields) => {
                 connection.release();
                 if (!err) {
