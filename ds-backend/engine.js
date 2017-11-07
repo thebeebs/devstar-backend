@@ -108,8 +108,8 @@ function pollDomains(game) {
     var options = {
       url: 'https://apaas.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/gse00000429?outputLevel=verbose',
       headers: {
-        'Authorization': domain.auth,
-        'X-ID-TENANT-NAME': domain.name
+        'Authorization': 'Basic Y2xvdWQuYWRtaW46c2hvd1lANkxlQWtlWQ==',
+        'X-ID-TENANT-NAME': 'gse00000429'
       }
     };
 
