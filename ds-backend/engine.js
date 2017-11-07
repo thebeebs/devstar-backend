@@ -102,7 +102,6 @@ function pollDomains(game) {
     console.log(`Domains: ${JSON.stringify(game.gseDomains)}`);
     var JSONDomains = JSON.parse(game.gseDomains);
 
-
 	JSONDomains.forEach(domain => {
         var options = {
     			host : domain.host,
@@ -131,7 +130,7 @@ function pollDomains(game) {
 		};
 
         console.log(`Doing request with options : ${JSON.stringify(options)}`);
-		var req = http.request(options, callback);
+		var req = http.get(options, callback);
 
 		req.end();
         console.log('end of request');
