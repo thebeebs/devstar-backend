@@ -106,7 +106,7 @@ function pollDomains(game) {
 
   JSONDomains.forEach(domain => {
 		var options = {
-			method: 'GET'
+			method: 'GET',
       url: 'https://' + domain.host + '/paas/service/apaas/api/v1.1/apps/' + domain.name + '?outputLevel=verbose',
       headers: {
         'Authorization': domain.auth,
