@@ -115,7 +115,11 @@ function pollDomains(game) {
 
     console.log(`Options: ${JSON.stringify(options)}`);
     callback = function(error, response, body) {
-			console.log(`End of callback, code is ` + response.statusCode);
+			console.log('End of callback, error is ' + error);
+
+			console.log('End of callback, response is ' + response);
+			console.log('End of callback, body is ' + body);
+
       if (!error && response.statusCode == 200) {
         var info = JSON.parse(body);
 
