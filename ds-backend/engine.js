@@ -106,7 +106,7 @@ function pollDomains(game) {
 
   JSONDomains.forEach(domain => {
     var options = {
-      url: 'google.com',
+      url: 'https://google.com',
       headers: {
         'Authorization': domain.auth,
         'X-ID-TENANT-NAME': domain.name
