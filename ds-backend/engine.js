@@ -106,7 +106,7 @@ function pollDomains(game) {
 
   JSONDomains.forEach(domain => {
     var options = {
-      url: 'https://google.com',
+      url: 'https://apaas.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/gse00000429?outputLevel=verbose',
       headers: {
         'Authorization': domain.auth,
         'X-ID-TENANT-NAME': domain.name
