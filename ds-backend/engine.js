@@ -107,10 +107,10 @@ function pollDomains(game) {
   JSONDomains.forEach(domain => {
     var options = {
 			method: 'GET',
-      url: 'https://apaas.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/gse00002102?outputLevel=verbose',
+      url: 'https://apaas.europe.oraclecloud.com/paas/service/apaas/api/v1.1/apps/gse00012654?outputLevel=verbose',
       headers: {
-        'Authorization': 'Basic Y2xvdWQuYWRtaW46VW5sYWNlZEAxQ29NQg==',
-        'X-ID-TENANT-NAME': 'gse00002102'
+        'Authorization': 'Basic Y2xvdWQuYWRtaW46c29MdWJsZUA3SGFOZw==',
+        'X-ID-TENANT-NAME': 'gse00012654'
       }
     };
 
