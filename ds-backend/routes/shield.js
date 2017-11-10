@@ -11,10 +11,11 @@ const yCoordinate = 45;
  * Endpoint to hit the shield.
  */
 router.get('/' + xCoordinate + '/' + yCoordinate + '/:squadName/:microserviceName', function(req, res, next) {
-    incomingHandler.incomingFire(req.params.squadName, req.params.microserviceName, missionHandler.MISSION.SHIELD);
+  console.log('Incoming fire to shield, squadName: ' + req.params.squadName + ', ms name: ' + req.params.microserviceName);
+
 			if (req.params.squadName == 'test') {
 				// this is used to test out the endpoint from Postman
-				req.params.squadName = 'blue	';
+				req.params.squadName = 'blue';
 				incomingHandler.incomingFire(req.params.squadName, req.params.microserviceName, missionHandler.MISSION.SHIELD);
 				res.send('Shield hit!');
 			} else {
