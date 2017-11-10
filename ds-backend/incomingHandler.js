@@ -12,10 +12,8 @@ const incomingFire = async (squadName, microserviceName, type) => {
     try {
         let gameId = (await deathstar.getCurrentGame()).id;
         let ms = (await microservices.getMicroserviceByGameAndName(gameId, microserviceName, squadName))[0];
-				if (ms) {
-					let sq = (await squads.getSquadByUserName(gameId, ms.userName, ms.environment))[0];
-					console.log(`Incoming fire from squad: ${JSON.stringify(sq)} and microservice is: ${JSON.stringify(ms)}`);
-				}
+				let sq = (await squads.getSquadByUserName(gameId, ms.userName, ms.environment))[0];
+				console.log(`Incoming fire from squad: ${JSON.stringify(sq)} and microservice is: ${JSON.stringify(ms)}`);
 
         let result = missionHandler.missionCompleted(type, ms, sq, gameId);
         return result;
