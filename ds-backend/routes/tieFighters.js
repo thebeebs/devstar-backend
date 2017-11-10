@@ -12,7 +12,6 @@ const xCoordinate = 45;
 router.get('/' + xCoordinate + '/:y/:squadName/:microserviceName', function(req, res, next) {
   console.log('Incoming TIE fire to shield, squadName: ' + req.params.squadName + ", ms name: " + req.params.microserviceName);
 
-  incomingHandler.incomingMinigun(req.params);
 	if (req.params.squadName == 'test') {
 		// this is used to test out the endpoint from Postman
 		req.params.squadName = 'blue';
