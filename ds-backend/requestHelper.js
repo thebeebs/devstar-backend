@@ -4,6 +4,8 @@ var isFromOracle = function(req, callback) {
 	console.info('isFromOracle called');
 	var myPromise = new Promise(function (resolve, reject) {
 		// TODO: This must be failsafe and not crash
+		console.info('Headers are ' + JSON.stringify(req.headers));
+
 		console.info('will do reverse, header is ' + req.headers['client-ip']);
 		dns.reverse(req.headers['client-ip'], function(err, domains) {
 			console.info('Got response');
