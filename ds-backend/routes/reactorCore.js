@@ -17,15 +17,13 @@ router.get('/' + xCoordinate + '/' + yCoordinate + '/:squadName/:microserviceNam
 				incomingHandler.incomingFire(req.params.squadName, req.params.microserviceName, missionHandler.MISSION.DATABASE);
 				res.send('Reactor core hit!');
 			} else {
-				requestHelper.isFromOracle(req)
-					.then( isOracle => {
-						if (isOracle) {
-							incomingHandler.incomingFire(req.params.squadName, req.params.microserviceName, missionHandler.MISSION.DATABASE);
-							res.send('Reactor core hit!');
-						} else {
-							res.send('Caller is not a fighter!');
-						}
-					});
+				if (req.headers['user-agent']) {
+					// is coming from a non-server client
+					res.send('Caller is not a fighter!');
+				} else {
+					incomingHandler.incomingFire(req.params.squadName, req.params.microserviceName, missionHandler.MISSION.DATABASE);
+					res.send('Reactor core hit!');
+				}
 			}
 });
 

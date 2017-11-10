@@ -18,15 +18,13 @@ router.get('/' + xCoordinate + '/:y/:squadName/:microserviceName', function(req,
 		incomingHandler.incomingMinigun(req.params);
 		res.send('Something got hit!');
 	} else {
-		requestHelper.isFromOracle(req)
-			.then( isOracle => {
-				if (isOracle) {
-					incomingHandler.incomingMinigun(req.params);
-					res.send('Something got hit!');
-				} else {
-					res.send('Caller is not a fighter!');
-				}
-			});
+    if (req.headers['user-agent']) {
+      // is coming from a non-server client
+      res.send('Caller is not a fighter!');
+    } else {
+      incomingHandler.incomingMinigun(req.params);
+      res.send('Something got hit!');
+    }
 	}
 });
 
