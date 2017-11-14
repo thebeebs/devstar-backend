@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const requestHelper = require('../requestHelper');
 const incomingHandler = require('../incomingHandler');
 const missionHandler = require('../missionHandler');
 

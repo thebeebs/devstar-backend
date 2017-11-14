@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var requestHelper = require('../requestHelper');
 var incomingHandler = require('../incomingHandler');
 var missionHandler = require('../missionHandler');
 
@@ -12,6 +11,7 @@ const yCoordinate = 45;
  */
 router.get('/' + xCoordinate + '/' + yCoordinate + '/:squadName/:microserviceName', function(req, res, next) {
   console.log('Incoming fire to shield, squadName: ' + req.params.squadName + ', ms name: ' + req.params.microserviceName);
+  console.log('Headers are ' + JSON.stringify(req.headers));
 
 			if (req.params.squadName == 'test') {
 				// this is used to test out the endpoint from Postman
