@@ -7,7 +7,7 @@ const debugHandler = require('./debugHandler');
 var array = [];
 
 const incomingFire = async (squadName, microserviceName, type) => {
-	console.log('Incomingfire' );
+	console.log('Incoming fire from ' + squadName + ', ' + microserviceName);
         debugHandler.insert('incomingHandler', 'Incomingfire' );
     try {
         let gameId = (await deathstar.getCurrentGame()).id;

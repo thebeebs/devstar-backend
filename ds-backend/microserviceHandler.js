@@ -93,6 +93,7 @@ module.exports = {
             modified = '${microservice.lastModifiedTime}',
             instances = ${microservice.lastestDeployment.processes[0].quantity},
             memory = '${microservice.lastestDeployment.processes[0].memory}',
+            version = '${microservice.lastestDeployment.deploymentInfo.deploymentNumber}',
             status = '${microservice.status}' WHERE id = ${microserviceId}`;
             pool.getConnection((err, connection) => {
                 if (err) {
@@ -117,14 +118,15 @@ module.exports = {
 
     insertMicroservice: (microservice, gameId) => {
         let myPromise = new Promise(function (resolve, reject) {
-            let sqlString = `INSERT INTO Microservices (name, gameId, environment, created, modified, platform, instances, memory, status, userName)
+            let sqlString = `INSERT INTO Microservices (name, gameId, environment, created, modified, platform, instances, memory, status, userName, version)
                 VALUES('${microservice.name}', ${gameId}, '${microservice.identityDomain}',
                 '${microservice.creationTime}', '${microservice.lastModifiedTime}',
                 '${microservice.lastestDeployment.environment}',
                 ${microservice.lastestDeployment.processes[0].quantity},
                 '${microservice.lastestDeployment.processes[0].memory}',
                 '${microservice.status}',
-                '${microservice.lastestDeployment.deploymentInfo.uploadedBy}')`;
+                '${microservice.lastestDeployment.deploymentInfo.uploadedBy}',
+                '${microservice.lastestDeployment.deploymentInfo.deploymentNumber}')`;
             debugHandler.insert('microserviceHandler', sqlString);
             pool.getConnection((err, connection) => {
                 if (err) {

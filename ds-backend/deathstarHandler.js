@@ -77,15 +77,7 @@ const updateState = (state, id) => {
                     reject(err);
             });
         });
-        /*db.query(sqlString, (err, result, fields) => {
-            if (!err) {
-                console.log('Deathstar state set to ' + state);
-                resolve();
-            } else {
-                console.log('Database error: ' + err.stack);
-                reject(err);
-            }
-        });*/
+
     });
     return myPromise;
 };
@@ -115,14 +107,7 @@ const updateHealth = (gameId, damageToGive) => {
                 }
             });
         });
-        /*db.query(sqlstring, (err, result, fields) => {
-            if (!err) {
-                resolve();
-            } else {
-                console.log('Database error: ' + err.stack);
-                reject(err);
-            }
-        });*/
+
     });
     return myPromise;
 };
@@ -143,15 +128,7 @@ const insertGame = (deathStarId, timeLimit, domains, squads) => {
                 + "')";*/
         let sqlString = `INSERT INTO Games (endTime, timeLimit, deathStarId, gseDomains)
             VALUES(NOW() + INTERVAL + ${timeLimit} MINUTE, ${timeLimit}, ${deathStarId}, '${JSON.stringify(domains)}')`;
-        /*db.query(sqlstring, (err, result, fields) => {
-            if (!err) {
-                console.log('Inserted game with id ' + result.insertId);
-                resolve(result.insertId);
-            } else {
-                console.log('Database error: ' + err.stack);
-                reject(err);
-            }
-        });*/
+
         pool.getConnection( (err, connection) => {
             if(err)
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
@@ -263,8 +240,7 @@ const getCurrentGame = function () {
                 connection.query(sqlString, (err, result, fields) => {
                     connection.release();
                     if (!err) {
-                        console.log(`Result getCurrent game: ${JSON.stringify(result)}`);
-                        //console.log(result);
+
                         resolve(result[0]);
                     } else {
                         console.log('Database error: ' + err.stack);

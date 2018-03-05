@@ -20,7 +20,7 @@ const missionCompleted = async (mission, microservice, squad, gameId) => {
 		return;
 	}
     try {
-        console.log('We have a new completed mission..!');
+        console.log('See if mission completed for ' + squad.name + ", " + microservice.name + " for mission " + mission.name);
         let missionId = await getMissionId(mission.name, gameId);
         let isCompletedByMicroservice = await isMissionCompletedByMicroservice(missionId, microservice.id);
         if (isCompletedByMicroservice)
@@ -29,7 +29,7 @@ const missionCompleted = async (mission, microservice, squad, gameId) => {
         let isCompletedBySquad = await isMissionCompletedBySquad(missionId, squad.id);
         let fractionOfSquadsCompleted = await getFractionCompleted(missionId, gameId);
         let scoreToGive = isCompletedBySquad ? 0 : (mission.maxScore * (1 - fractionOfSquadsCompleted));
-        console.log(`Inserting mission complete: ${missionId} ${microservice.id} ${gameId} ${scoreToGive}`)
+        console.log(`Yes. Inserting mission complete: ${missionId} ${microservice.id} ${gameId} ${scoreToGive}`)
         insertMissionCompleted(missionId, microservice.id, gameId, scoreToGive);
         deathstar.updateHealth(gameId, scoreToGive);
         switch (mission.name) {

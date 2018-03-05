@@ -33,11 +33,11 @@ function formatDate(dateString) {
 // Takes an options object with rows requested, ordering and gameId..
 function getLogs(options) {
     options = options || {};
-    
+
     let amount = has.call(options, 'amount') ? options.amount : 5;
     let ordering = has.call(options, 'ordering') ? options.ordering : 'DESC';
     let gameId = has.call(options, 'gameId') ? options.gameId : false;
-    
+
     let myPromise = new Promise( (resolve, reject) => {
         let sqlString = `SELECT * FROM Logs `;
         let whereClause = `WHERE gamesId =`;
@@ -45,12 +45,12 @@ function getLogs(options) {
             whereClause = whereClause.concat(gameId);
         else
             whereClause = whereClause.concat(`(SELECT MAX(id) FROM Games)`);
-        
+
         let orderClause = ` ORDER BY id ${ordering}`;
-        let limitClause = ` LIMIT ${amount}`;
-        
-        sqlString = sqlString.concat(whereClause, orderClause, limitClause);
-        
+        //let limitClause = ` LIMIT ${amount}`;
+
+        sqlString = sqlString.concat(whereClause, orderClause);
+
         pool.getConnection((err, connection) => {
             if (err) {
                 console.log(`Error!`);
@@ -74,11 +74,11 @@ function getLogs(options) {
 
 function insertLog(squadName, microserviceName, score, damage, type) {
     let myPromise = new Promise( (resolve, reject) => {
-        
+
         let sqlString = `INSERT INTO Logs(time, gamesId, squadName,
             microserviceName, score, damage, type) VALUES (
-            '${formatDate(new Date().toString())}', 
-            (SELECT MAX(id) FROM Games), '${squadName}', 
+            '${formatDate(new Date().toString())}',
+            (SELECT MAX(id) FROM Games), '${squadName}',
             '${microserviceName}', ${score}, ${damage}, '${type}')`;
         pool.getConnection((err, connection) => {
             if (err) {

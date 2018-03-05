@@ -18,14 +18,12 @@ module.exports = {
   // this will run every minute to update all microservices in the DB
   // and update the state of the game if needed
   update: function() {
-    console.log('update');
     deathstar.getCurrentGame()
       .then(game => {
         if (game) {
           deathstar.getDeathstar(game.deathStarId)
             .then(deathstarObj => {
               if (!(deathstarObj.state == deathstarObj.state.INITIALIZING)) {
-                console.log('Should go polling domains');
                 pollDomains(game);
                 checkIfStateChanged(game)
               }
@@ -41,40 +39,11 @@ module.exports = {
  * have completed, update to the next state!
  */
 function checkIfStateChanged(game) {
-  debugHandler.insert('Engine', 'Check state, id now ' + game.state);
-  console.log(`checkIfStateChanged game: ${JSON.stringify(game)}`);
   switch (game.state) {
-    /*
-	case deathstar.STATE.STARTED:
-        console.log('Goto updateStateIfNeeded');
-		updateStateIfNeeded(0, missionHandler.MISSION.SCALE.name, deathstar.STATE.SHIELD, game);
-		break;
-	case deathstar.STATE.SHIELD:
-        console.log('Goto updateStateIfNeeded');
-		updateStateIfNeeded(0, missionHandler.MISSION.SHIELD.name, deathstar.STATE.FINAL, game);
-		break;
-	case deathstar.STATE.FINAL:
-        console.log('Goto updateStateIfNeeded');
-		missionHandler.getMissionId(missionHandler.MISSION.ITERATE.name, game.id)
-		.then( id => missionHandler.getFractionCompleted(id, game.id))
-		.then( fractionOfSquadsCompleted => {
-			if (fractionOfSquadsCompleted > 1) {
-				missionHandler.getMissionId(missionHandler.MISSION.DATABASE.name, game.id)
-				.then( id => missionHandler.getFractionCompleted(id, game.id))
-				.then( fractionOfSquadsCompleted => {
-					if (fractionOfSquadsCompleted >= 0.5) {
-						deathstar.updateState(deathstar.STATE.HARD, game.deathStarId);
-					}
-				});
-			}
-		});
-		break;
-		*/
     case deathstar.STATE.FALCON:
       updateStateIfNeeded(0.5, missionHandler.MISSION.FALCON.name, deathstar.STATE.FALCONCALLED, game);
       break;
     default:
-      console.log('State default!');
       break;
   }
 }
@@ -83,10 +52,8 @@ function checkIfStateChanged(game) {
  * Update the game state if needed.
  */
 function updateStateIfNeeded(minimumFractionCompleted, missionName, nextState, game) {
-  console.log('In updateStateIfNeeded');
   missionHandler.getMissionId(missionName, game.id)
     .then(id => {
-      console.log(`UpdateStateIfNeeded: ${JSON.stringify(game)}`);
       return missionHandler.getFractionCompleted(id, game.id);
     }).then(fractionOfSquadsCompleted => {
       if (fractionOfSquadsCompleted >= minimumFractionCompleted) {
@@ -99,9 +66,6 @@ function updateStateIfNeeded(minimumFractionCompleted, missionName, nextState, g
  * Queries all the domains that are belonging to the different squads.
  */
 function pollDomains(game) {
-  console.log(`polling domains`);
-  console.log(`GAME: ${JSON.stringify(game)}`);
-  console.log(`Domains: ${JSON.stringify(game.gseDomains)}`);
   var JSONDomains = JSON.parse(game.gseDomains);
 
   JSONDomains.forEach(domain => {
@@ -114,24 +78,16 @@ function pollDomains(game) {
       }
     };
 
-    console.log(`Options: ${JSON.stringify(options)}`);
     callback = function(error, response, body) {
-			console.log('End of callback, error is ' + error);
-
-			console.log('End of callback, response is ' + response);
-			console.log('End of callback, body is ' + body);
 
       if (!error && response.statusCode == 200) {
         var info = JSON.parse(body);
 
         updateMicroservicesForDomain(info, game.id);
-        console.log(`End of callback`);
       }
     };
 
-    console.log(`Doing request with options : ${JSON.stringify(options)}`);
     request(options, callback);
-    console.log('end of request');
   });
 
 }
@@ -153,7 +109,6 @@ function updateMicroservicesForDomain(JSONObject, gameId) {
 function updateMicroservice(rows, microservice, gameId) {
   var dbMicroservice = rows[0];
   if (dbMicroservice && dbMicroservice.name === microservice.name) {
-    console.log(`Microservice already exists. Time to update..`);
     // microservice exists, let's see if it should be updated
     if (dbMicroservice.instances === microservice.lastestDeployment.processes[0].quantity) {
       // number of instances are the same, check if the RAM has changed
@@ -174,7 +129,6 @@ function updateMicroservice(rows, microservice, gameId) {
       microservices.updateMicroservice(microservice, dbMicroservice.id);
     }
   } else {
-    console.log('Microservice does not exist. Insert it.');
     // microservice does not exist in DB, let's insert it
     microservices.insertMicroservice(microservice, gameId)
       // our microservice is inserted on then clause, but it
