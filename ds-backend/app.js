@@ -19,6 +19,9 @@ var shield = require('./routes/shield');
 var fueltank = require('./routes/fuelTank');
 var cron = require('node-cron');
 
+// Serverless Mission
+var missioncontrol = require('./routes/missioncontrol');
+
 var app = express();
 app.use(cors())
 // view engine setup
@@ -46,6 +49,10 @@ app.use('/spy', spy);
 app.use('/shield', shield);
 app.use('/debug', debug);
 app.use('/fueltank', fueltank);
+
+// Serverless Missions
+
+app.use('/missioncontrol', missioncontrol);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

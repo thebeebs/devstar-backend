@@ -1,17 +1,17 @@
 const mysql = require('mysql');
 
-const dbPassword = 'welcome1';//"Welcome1!";
+const dbPassword = 'my-secret-pw';//"Welcome1!";
 const dbUserName = "root";
 
 // the connect string will get it's value from the ACCS
 // binding, if you are running locally you need to
 // make sure you have a thunnel as per below
-//const connectString = process.env.MYSQLCS_CONNECT_STRING
-        //|| "127.0.0.1:3306/deathstar";
+const connectString = process.env.MYSQLCS_CONNECT_STRING
+        || "localhost:3306/deathstar";
 
-const databaseUrl = `${JSON.stringify(process.env.OCCS_HOSTIPS)}`.split('public_ip: ')[1].split('"')[0];
+//const databaseUrl = `${JSON.stringify(process.env.OCCS_HOSTIPS)}`.split('public_ip: ')[1].split('"')[0];
 
-const connectString = `${databaseUrl}:3306`;
+//const connectString = `${databaseUrl}:3306`;
 
 const host = connectString.split(":")[0];
 const user = process.env.MYSQLCS_USER_NAME || dbUserName;
@@ -31,4 +31,7 @@ console.log(JSON.stringify(connectionJson));
 
 const pool = mysql.createPool(connectionJson);
 
+console.log("cool")
+
 module.exports = pool;
+

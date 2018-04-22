@@ -300,6 +300,27 @@ var getDeathstar = function (id) {
     return myPromise;
 };
 
+const insertLaunch = function (name, function1url) {
+    let myPromise = new Promise((resolve, reject) => {
+        let sqlString = `INSERT INTO deathstar.Launches (name, function1url, complete)
+            VALUES('${name}', '${function1url}', false)`;
+console.log(sqlString)
+        pool.getConnection( (err, connection) => {
+            if(err)
+                reject(`Error connecting to database: ${JSON.stringify(err)}`);
+
+            connection.query(sqlString, (error, result, fields) => {
+                connection.release();
+                if(!error)
+                    resolve(result.insertId);
+                else
+                    reject(err);
+            });
+        });
+    });
+    return myPromise;
+};
+
 module.exports = {
     insertDeathStar: insertDeathStar,
     insertGame: insertGame,
@@ -310,5 +331,6 @@ module.exports = {
     getDeathstarForGame: getDeathstarForGame,
     getCurrentGame: getCurrentGame,
     getDeathstar: getDeathstar,
+    insertLaunch : insertLaunch,
     STATE: STATE
 };
