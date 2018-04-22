@@ -304,7 +304,7 @@ const insertLaunch = function (name, function1url) {
     let myPromise = new Promise((resolve, reject) => {
         let sqlString = `INSERT INTO deathstar.Launches (name, function1url, complete)
             VALUES('${name}', '${function1url}', false)`;
-console.log(sqlString)
+        console.log(sqlString)
         pool.getConnection( (err, connection) => {
             if(err)
                 reject(`Error connecting to database: ${JSON.stringify(err)}`);
